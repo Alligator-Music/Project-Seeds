@@ -1,0 +1,22 @@
+#megs: 32
+#romimage: file=C:\dev\bochs\Bochs-2.7\BIOS-bochs-latest
+#vgaromimage: file=C:\dev\bochs\Bochs-2.7\VGABIOS-lgpl-latest
+# ata0-slave: type=cdrom, path=os.img, status=inserted
+# boot: cdrom
+# floppya: 1_44=os.img, status=inserted
+#ata0: enabled=1, ioaddr1=0x1f0, ioaddr2=0x3f0, irq=14
+#ata0-master: type=disk, path=./os.img, cylinders=489, heads=2, spt=32
+#boot: c
+# floppy_bootsig_check: disabled=1
+#log: bochsout.txt
+#mouse: enabled=0
+#clock: sync=realtime
+#cpu: ips=70000000
+#display_library: win32
+
+ata0-master: type=disk, mode=flat, path=os.bin, translation=none
+ata0: enabled=1, ioaddr1=0x1f0, ioaddr2=0x3f0, irq=14
+display_library: win32
+megs: 1
+boot: disk
+clock: sync=realtime, time0=local, rtc_sync=1

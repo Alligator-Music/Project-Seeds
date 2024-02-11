@@ -1,0 +1,8 @@
+TODO stuff
+
+make memory managment (mm)
+    - this very important so i can have strtok stuff for the CLI
+
+fix bootloader being DELETED error
+
+implement my actual libc file handling implementation
