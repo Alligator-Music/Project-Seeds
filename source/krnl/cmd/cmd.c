@@ -2,6 +2,8 @@
 
 #include "libc/libc.h"
 
+#include "drivers/disk/ata/ata.h"
+
 int cmd(const char* str) {
     if (strcmp("ver", str)) {
         cout("Seeds v1.0 x86_32\n");
@@ -13,6 +15,8 @@ int cmd(const char* str) {
         cout("reboot - reboots the machine\n");
         cout("count - get file count\n");
         cout("fstest - tests filesystem\n");
+        cout("prog - run sample program\n");
+        cout("excpt - trigger a div_by_0 exception in the system\n");
         return 0;
     }
     else if (strcmp("reboot", str)) {
@@ -31,11 +35,33 @@ int cmd(const char* str) {
             cout("TESTFILE$$$ created!\n");
         }
         cout("file count (should be 2 + files added rn): %d\n", file_count());
+        
         if (seedfs_deletefile("TESTFILE$$$") == 0) {
             cout("TESTFILE$$$ was deleted!\n");
         }
         cout("file count (should be 2): %d\n", file_count());
         return 0;
+    }
+    else if (strcmp("prog", str)) {
+        typedef void func(void);
+        void* addr = file_read("prog    bin");
+        
+        if (addr == null) {
+            cout("Error: prog.bin does not exist!\n");
+        }
+        else {
+            cout("Running at: 0x%x\n", (int)addr);
+            cout("Contents: ");
+            for (int i = 0; i < 2048; i++) {
+                cout("%c", *(char*)(addr + i));
+            }
+            
+            func* f = (func*)addr;
+            //f();
+        }
+    }
+    else if (strcmp("excpt", str)) {
+        __asm__ volatile ("int $0x00");
     }
     else if (strcmp(str, "")) {
         return 0;

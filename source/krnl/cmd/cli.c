@@ -3,15 +3,18 @@
 #include "libc.h"
 
 void start_cli() {
-    // print task bar
-    cout("%sSeeds Kernel Mode CLI%s", "\x11\x02\x02\x11\x03\x70", "\x11\x02\x01");
+    //cout("Seeds System CLI\n");
+    //cout("\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\n");
+
+    cout("\nSeeds System CLI\nType 'help' for help.\n");
 
     while (true) {
-        cout("seeds> ");
-        char* input = cin().buffer;
+        cout("> ");
+        char* input = cin();
+        
         int ret = cmd(input);
         if (ret == ERR_CMD_UNKNOWN_CMD) {
-            cout("Unknown Command '%s'\n", input);
+            cout("Unknown Command '%s', type 'help' for help\n", input);
         }
     }
 }

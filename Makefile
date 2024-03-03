@@ -35,7 +35,8 @@ build: boot $(ASMTAR) $(CTAR)
 #dd if=/dev/zero bs=1 seek=8192 count=1 of=$(BIN)/osentry.bin
 	dd if=/dev/zero bs=1 seek=16383 count=1 of=$(BIN)/kernel.bin
 #cat $(BIN)/mbr.bin $(BIN)/registry.bin $(BIN)/osentry.bin > $(BIN)/boot.bin
-	cat $(BIN)/mbr.bin $(BIN)/load.bin $(BIN)/startft.bin $(BIN)/kernel.bin > os.bin
+	nasm source/progs/prog.asm -f bin -o $(BIN)/prog.bin
+	cat $(BIN)/mbr.bin $(BIN)/load.bin $(BIN)/startft.bin $(BIN)/kernel.bin $(BIN)/prog.bin > os.bin
 
 boot:
 	nasm source/boot/mbr/mbr.asm -f bin -o $(BIN)/mbr.bin
@@ -57,7 +58,7 @@ bochs: prebuild build
 qemu: prebuild build
 	$(CMD) /c qemu-system-x86_64 \
 	-monitor stdio \
-	-m 128M \
+	-m 8M \
 	-drive format=raw,file=$(BINDIR)os.bin,if=ide,index=0,media=disk \
 	-rtc base=localtime,clock=host,driftfix=slew
 	

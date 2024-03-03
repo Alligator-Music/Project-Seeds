@@ -1,12 +1,10 @@
-[extern syscall_func0]
+[extern syscall_func]
 
 global syscall_dispatcher
 
 syscall_dispatcher:
-    pusha       ; save register
-    push .string
-    call syscall_func0
+    pusha       ; save registers
+    call syscall_func
     popa
-    add esp, 0x4
+    ;add esp, 0x4
     iret
-.string: db 'DUMMY SYSCALL', 0

@@ -1,5 +1,5 @@
 # Seeds-System
-A Custom operating system
+A Custom 32-bit operating system
 
 Features:
  - An MBR and bootloader
@@ -9,3 +9,4 @@ Features:
  - Custom File System
  - Taskbar
  - Custom libc
+ 

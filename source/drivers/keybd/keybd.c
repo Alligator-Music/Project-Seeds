@@ -3,6 +3,8 @@
 #include "libc.h"
 #include "libk/libk.h"
 
+extern struct input_stream_t main_input_stream;
+
 char keybd_scantable[128] = {
     0,  27, '1', '2', '3', '4', '5', '6', '7', '8', /* 9 */
     '9', '0', '-', '=', '\b',   /* Backspace */
@@ -43,6 +45,7 @@ char keybd_scantable[128] = {
 };
 
 bool pressed = false;
+bool shift = false;
 
 char keybd_getch() {
     char sc;
@@ -51,6 +54,13 @@ char keybd_getch() {
         outb(0x20, 0x20);
 
         sc = inb(0x60);
+        if (sc == 0x2a) {
+            shift = true;
+            sc = 0x80;
+        }
+        //else {
+        //    shift = false;
+        //}
 
         if (sc & 0x80) {
             // released
@@ -59,7 +69,13 @@ char keybd_getch() {
             // pressed
             if (!pressed) {
                 pressed = true;
-                return keybd_scantable[sc];
+                if (shift) {
+                    shift = false;
+                    return keybd_scantable[sc] - 0x20;
+                }
+                else {
+                    return keybd_scantable[sc];
+                }
             }
         }
     }

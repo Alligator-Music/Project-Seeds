@@ -3,7 +3,7 @@
 
 void txtmd_cur_enable(struct cursor_t cur_info) {
     outb(0x3D4, 0x0A);
-	outb(0x3D5, (inb(0x3D5) & 0xC0) | cur_info.start);
+    outb(0x3D5, (inb(0x3D5) & 0xC0) | cur_info.start);
  
 	outb(0x3D4, 0x0B);
 	outb(0x3D5, (inb(0x3D5) & 0xE0) | cur_info.end);
@@ -51,5 +51,5 @@ void txtmd_init() {
     struct cursor_t cur_info; cur_info.start = TEXTMD_CUR_UNDERSCORE_START; cur_info.end = TEXTMD_CUR_UNDERSCORE_END;
     txtmd_cur_enable(cur_info);
     txtmd_cur_move(0, 0);
-    txtmd_clear(TEXTMD_CONSOLE_COLOR);
+    txtmd_clear(0x07);
 }

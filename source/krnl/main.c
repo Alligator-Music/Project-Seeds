@@ -1,54 +1,64 @@
-// drivers
+//
+// Seeds Kernel
+// void main() is the first thing run by load.bin
+//
+
 #include "cpu/int/interrupts.h"
+#include "cpu/pic/pic.h"
 #include "krnl/syscall/syscall.h"
 #include "fs/seedfs/seedfs.h"
 #include "drivers/video/textmd/textmd.h"
 #include "drivers/keybd/keybd.h"
 #include "krnl/mm/memman.h"
 
-// libc
 #include "libc.h"
 #include "libk/libk.h"
 
-// other
 #include "krnl/cmd/cli.h"
 
-void main() {
-    ////////////////////////
-    // initialize drivers //
-    ////////////////////////
-    txtmd_init();
+void main(unsigned int flags) {
 
-    if (idt_init() != 0) {
-        cout("Error: could not setup IDT");
-        halt();
-    }
+    txtmd_init();                                                      // setup text mode
 
-    if (syscall_install() != 0) {
-        cout("Error: could not install syscall");
-        halt();
-    }
+    flush();                                                           // flush stdout for the first time
+    cout("%s", "\x11\x02\x07");                                        // and clear the screen
 
-    if (seedfs_init() != 0) {
-        cout("Error: could not initialize seedfs");
-        halt();
-    }
+    cout("Entered 32 bit protected mode\n");                           // print out stuff load.exe did
+    cout("Loaded into kernel, addr: 0x%x\n", (unsigned int)main);
 
-    // wow this code looks kinda ugly but thats what box drawing characters are ):
-    cout("%sWelcome to Seeds System\n", "\x11\x03\x07");
-    cout("\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\xc4\n");
-    cout("(1) Boot to Seeds CLI\n");
+    cout("Initialized text mode and flushed stdout\n");
 
-    // make task bar
-    cout("%sSeeds Boot Menu%s", "\x11\x02\x02\x11\x11\x03\x70", "\x11\x02\x01");
+    idt_init();                                                        // setup the interrupt descriptor table, so we can have system calls,
+    cout("Installed IDT, IDTR addr: %x\n", (unsigned int)&idtr);       // exceptions, timers, keyboard handlers, etc.
 
-    while (true) {
-        char sc = keybd_getch();
-        if (sc == '1') {
-            start_cli();
-            break;
+    idt_set_descriptor(0x80, syscall_dispatcher, INT_GATE_USER_FLAGS); // set interrupt 0x80 to the system call dispatcher
+    cout("Installed syscall at int 0x80, Handler addr: 0x%x\n", (unsigned int)syscall_dispatcher);
+
+    pic_remap(PIC_REMAP_MASTER, PIC_REMAP_SLAVE);                      // remap the pic, so it doesn't conflict with exceptions.
+    cout("Remapped PIC by offset 0x20\n");                             // this is done because exceptions (int 0-31) take up the space the pic
+                                                                       // does, so we have to move the irq's to an upper space (in this case right after)
+
+    for (int i = 0; i < 15; i++) { irq_set_mask(i); }                  // set IRQ masks for all irq's, so the system doesn't crash for an unhandled one
+    cout("Masked IRQ's 0-15\n");                                       // (like the system timer) right when we enable interrupts
+
+    sti();                                                             // enable interrupts
+    cout("Enabled interrupts\n");
+
+    seedfs_init();                                                     // initialize Seeds File System
+    cout("Initialized seedfs\n");
+
+    // sh1tty a$$ fu@@ing code stfu rn what is this idk its like memory management but i did it wrong and idk how mmap stuff works )):
+    uint32_t full_mem_size;
+    for (int i = 0; i < *(char*)0x0800; i++) {
+        cout("mmap entry length: %d mmap entry type: %d\n", *(uint64_t*)(0x0500 + (i * 24) + 8), *(uint32_t*)(0x0500 + (i * 24) + 16));
+        if (*(uint32_t*)(0x0500 + (i * 24) + 16) == 0) {
+            full_mem_size += *(uint64_t*)(0x0500 + (i * 24) + 8);
         }
     }
+    cout("full memory size: 0x%x", full_mem_size);
+
+    start_cli();                                                       // start the seeds CLI (Command Line Interface)
     
-    halt();
+    halt();                                                            // halt the system incase the CLI exits
+    cout("System halted\n");
 }

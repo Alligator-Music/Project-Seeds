@@ -80,7 +80,7 @@ void* seedfs_readfile(char* path) {
     if (seedfs_exists(path)) {
         ata_rw_sectors(seedfs_sizesects(path), seedfs_startsect(path), SEEDFS_FILE_LOAD_ADDR, ATA_READ_WITH_RETRY);
         return SEEDFS_FILE_LOAD_ADDR;
-    } 
+    }
     else {
         return null;
     }
@@ -113,8 +113,8 @@ int seedfs_createfile_entry(const char* path, uint32_t size_sects, uint32_t star
 int seedfs_createfile(const char* path, uint32_t size_sects, uint8_t type) {
     int highest = 0;
     for (int i = 0; i < SEEDFS_MAX_FILE_ENTRYS; i++) {
-        if (*(uint32_t*)((SEEDFS_FT_START_ADDR + i * SEEDFS_FILE_ENTRY_SIZE) + 11) > highest) {
-            highest = *(uint32_t*)((SEEDFS_FT_START_ADDR + i * SEEDFS_FILE_ENTRY_SIZE) + 11);
+        if (*(uint32_t*)((SEEDFS_FT_START_ADDR + (i * SEEDFS_FILE_ENTRY_SIZE)) + 11) > highest) {
+            highest = *(uint32_t*)((SEEDFS_FT_START_ADDR + (i * SEEDFS_FILE_ENTRY_SIZE)) + 11);
         }
     }
 
@@ -141,6 +141,8 @@ int seedfs_deletefile(char* path) {
             (char*)((SEEDFS_FT_START_ADDR + i * SEEDFS_FILE_ENTRY_SIZE)),
             path,
             SEEDFS_FILE_FULLNAME_SIZE )) {
+                cout("start sect: 0x%x\n", seedfs_startsect(path));
+                cout("size sects: 0x%x\n", seedfs_sizesects(path));
                 ata_set_sectors(seedfs_sizesects(path), seedfs_startsect(path), 0);
                 
                 memcpy((char*)((SEEDFS_FT_START_ADDR + i * SEEDFS_FILE_ENTRY_SIZE) + SEEDFS_FILE_ENTRY_SIZE),

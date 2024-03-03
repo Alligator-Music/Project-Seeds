@@ -6,7 +6,7 @@
 
 #include "libc/io/io.h"    // io (like cout() and cin(), aswell as file ops)
 #include "libc/util/mem.h" // memory and string utilities
-#include "krnl/cmd/cmd.h"  // just gives the 'int cmd(const char* str)' command, basically system();
+#include "krnl/cmd/cmd.h"  // just gives the 'int cmd(const char* str)' function, basically system();
 
 // integer types
 typedef unsigned char uint8_t;
