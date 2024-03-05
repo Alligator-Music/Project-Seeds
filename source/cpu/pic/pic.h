@@ -26,6 +26,8 @@
 
 #define PIC_REMAP_MASTER 0x20
 #define PIC_REMAP_SLAVE  0x28
+
+#define IRQ_KEYBD 0x01
  
 void pic_sendeoi(uint8_t irq);
 

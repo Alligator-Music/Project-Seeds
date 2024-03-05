@@ -12,6 +12,14 @@ typedef struct {
 	unsigned short isr_high;     // The higher 16 bits of the ISR's address
 } __attribute__((packed)) idt_entry_t;
 
+typedef struct __attribute__((packed)) int_frame_t {
+    unsigned int eip;
+    unsigned int cs;
+    unsigned int eflags;
+    unsigned int sp;
+    unsigned int ss;
+};
+
 typedef struct {
 	unsigned short limit;
 	unsigned int base;

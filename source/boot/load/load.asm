@@ -2,7 +2,9 @@
 ; Seeds OS loader
 ;
 
-%define SECTS_TO_READ 32
+%define DRIVE_NUM_ADDR 0x1020
+
+%define SECTS_TO_READ 64
 %define OS_LOAD_ADDR 0xAE00
 %define KERNEL_SECT_START 50
 
@@ -29,7 +31,7 @@ tryload:
 errorload:
     inc si                ; increment counter for load attempts
     cmp si, 5
-    je error
+    je error_ld
     jmp tryload
 
 noerrload:                ; there was no error loading (or we got less then 5 errors in a row)
@@ -37,7 +39,7 @@ noerrload:                ; there was no error loading (or we got less then 5 er
 ; get physical memory map
 memmap_entries equ 0x0800       ; Store number of memory map entries here
     get_memory_map:
-        mov di, 0x0500              ; Memory map entries start here
+        mov di, 0x0600              ; Memory map entries start here
         xor ebx, ebx                ; EBX = 0 to start, will contain continuation values
         xor bp, bp                  ; BP will store the number of entries
         mov edx, 'PAMS'             ; EDX = 'SMAP' but little endian
@@ -76,7 +78,7 @@ memmap_entries equ 0x0800       ; Store number of memory map entries here
 
     .error:
         stc
-        jmp error
+        jmp error_mmap
     .done:
         mov [memmap_entries], bp    ; Store # of memory map entries when done
         clc
@@ -111,10 +113,11 @@ in al, 0x92             ; enable A20 line
 or al, 0x02
 out 0x92, al
 
-push 0b00000000000000000000000000000000 ; kernel flags
-                                        ;
+; kernel flags
+push dword [DRIVE_NUM_ADDR]
+push dword 0
 
-jmp OS_LOAD_ADDR
+call OS_LOAD_ADDR
 
 [bits 16]
 ;; end of 32 bit section
@@ -145,8 +148,25 @@ GDT_descriptor:
     dw GDT_end - GDT_start - 1
     dd GDT_start
 
-error:
-    mov si, msg_error
+error_ld:
+    mov si, msg_error_ld
+    call print
+    
+    ; temporary error code displaying
+    push ax
+    mov al, ah
+    mov ah, 0x0e
+    int 0x10
+
+    pop ax
+    mov ah, 0x0e
+    int 0x10
+
+    cli
+    hlt
+
+error_mmap:
+    mov si, msg_error_mmap
     call print
     cli
     hlt
@@ -166,6 +186,7 @@ print:
     popa
     ret
 
-msg_error: db 'Could not load kernel', 0
+msg_error_ld: db 'Could not load kernel', 0
+msg_error_mmap: db 'Could not find memory map', 0
 
 times 8192-($-$$) db 0

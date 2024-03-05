@@ -4,8 +4,8 @@
 // unhandled exception handler
 // has to be unconnected to rest of kernel
 __attribute__((noreturn))
-void exception_handler(struct interrupt_frame *frame) {
-
+void exception_handler(struct int_frame_t* frame) {
+    
     // print out error message directly to video memory
     const char* str = "An unhandled exception has occured within the operating system ):\nPress any key to restart...";
     for (int i = 0; i < 80 * 25; i++) {

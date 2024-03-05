@@ -3,9 +3,6 @@
 #include "libc.h"
 
 void start_cli() {
-    //cout("Seeds System CLI\n");
-    //cout("\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\xcd\n");
-
     cout("\nSeeds System CLI\nType 'help' for help.\n");
 
     while (true) {

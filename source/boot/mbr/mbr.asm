@@ -8,6 +8,9 @@
 [org 0x7c00]
 [bits 16]
 
+; get drive number for kernel
+mov byte [0x1020], dl
+
 ; setup segments
 mov ax, 0
 mov es, ax
@@ -69,4 +72,4 @@ print:
 msg_error: db 'MBR Error', 0
 
 times 510-($-$$) db 0
-dw 0xaa55
+db 0x55, 0xaa

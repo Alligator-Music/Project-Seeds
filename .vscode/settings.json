@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "libk.h": "c",
-        "syscall.h": "c"
+        "syscall.h": "c",
+        "seedfs.h": "c"
     }
 }

@@ -6,8 +6,6 @@
 #include "drivers/video/textmd/textmd.h"
 #include "drivers/keybd/keybd.h"
 
-#include "fs/seedfs/seedfs.h"
-
 #include <stdarg.h>
 
 uint8_t current_color = CONSOLE_FOREGROUND_BLUE | CONSOLE_FOREGROUND_RED | CONSOLE_FOREGROUND_GREEN; // basically 0x07
@@ -163,12 +161,7 @@ int cout(const char* fmt, ...) {
             }
             else if (fmt[i + 1] == 'd') {
                 int a = va_arg(args, int);
-                if (a < 0) {
-                    print_int(a, 0);
-                }
-                else {
-                    print_int(a, 1);
-                }
+                print_int(a, 0);
                 
                 i++;
             }
@@ -247,16 +240,4 @@ const char* cin() {
             i++;
         }
     }
-}
-
-void* file_read(const char* path) {
-    return seedfs_readfile(path);
-}
-
-int file_create(const char* path) {
-    return seedfs_createfile(path, 1, SEEDFS_FILE_TYPE_FILE);
-}
-
-int file_count() {
-    return seedfs_getfilecount();
 }

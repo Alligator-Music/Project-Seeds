@@ -14,9 +14,9 @@
 #cpu: ips=70000000
 #display_library: win32
 
-ata0-master: type=disk, mode=flat, path=os.bin, translation=none
-ata0: enabled=1, ioaddr1=0x1f0, ioaddr2=0x3f0, irq=14
 display_library: win32
-megs: 1
-boot: disk
+megs: 12
+boot: floppy
+floppya: 1_44=os.bin, status=inserted
+floppy_bootsig_check: disabled=1
 clock: sync=realtime, time0=local, rtc_sync=1
