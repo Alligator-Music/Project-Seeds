@@ -1,12 +1,11 @@
 //
-// Seeds Kernel
+// Project Seeds Kernel
 // void main() is the first thing run by load.bin
 //
 
 #include "cpu/int/interrupts.h"
 #include "cpu/pic/pic.h"
 #include "krnl/syscall/syscall.h"
-#include "fs/seedfs/seedfs.h"
 #include "drivers/video/textmd/textmd.h"
 #include "drivers/keybd/keybd.h"
 #include "drivers/disk/disk.h"
@@ -41,16 +40,17 @@ void main(unsigned int flags, unsigned int drive_num) {
     for (int i = 0; i < 15; i++) { irq_set_mask(i); }                  // set IRQ masks for all irq's, so the system doesn't crash for an unhandled one
     cout("Masked IRQ's 0-15\n");                                       // (like the system timer) right when we enable interrupts
 
-    idt_set_descriptor(0x21, keybd_irq, INT_GATE_FLAGS);               // set the irq 0x21 (keyboard irq) to our keyboard irq handler
-    irq_clear_mask(0x01);                                              // clear the irq mask for the keyboard irq so it triggers
+    idt_set_descriptor(IRQ_REMAP + IRQ_PS2_KEYBD, keybd_irq, INT_GATE_FLAGS); // set the irq 0x21 (keyboard irq) to our keyboard irq handler
+    irq_clear_mask(IRQ_PS2_KEYBD);                                     // clear the irq mask for the keyboard irq so it triggers
     cout("Keyboard IRQ 0x01 setup\n");
 
-    while (inb(0x64) & 1) inb(0x60);                                   // clear ps2 keyboard buffer
-
+    while (inb(0x64) & 1) { inb(PS2_DATA_PORT); }                      // clear ps2 keyboard buffer
+    
     sti();                                                             // enable interrupts
     cout("Enabled interrupts\n");
 
-    // sh1tty a$$ fu@@ing code stfu rn what is this idk its like memory management but i did it wrong and idk how mmap stuff works )):
+    /*
+    // what is this idk its like memory management but i did it wrong and idk how mmap stuff works )):
     uint32_t full_mem_size;
     for (int i = 0; i < *(char*)0x0800; i++) {
         cout("mmap entry length: %d mmap entry type: %d\n", *(uint64_t*)(0x0600 + (i * 24) + 8), *(uint32_t*)(0x0600 + (i * 24) + 16));
@@ -59,6 +59,7 @@ void main(unsigned int flags, unsigned int drive_num) {
         }
     }
     cout("full memory size: 0x%x or %d", full_mem_size, full_mem_size);
+    */
 
     start_cli();                                                       // start the seeds CLI (Command Line Interface)
     

@@ -27,7 +27,11 @@
 #define PIC_REMAP_MASTER 0x20
 #define PIC_REMAP_SLAVE  0x28
 
-#define IRQ_KEYBD 0x01
+#define IRQ_SYS_TIMER 0x00
+#define IRQ_PS2_KEYBD 0x01
+#define IRQ_RTC       0x08
+
+#define IRQ_REMAP 0x20
  
 void pic_sendeoi(uint8_t irq);
 

@@ -1,6 +1,3 @@
-//
-// Seeds libc (Seeds C Libary)
-//
 
 #pragma once
 

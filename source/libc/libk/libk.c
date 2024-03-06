@@ -45,3 +45,5 @@ void sti() { __asm__ volatile ("sti"); /* set the interrupt flag */ }
 void cli() { __asm__ volatile ("cli"); /* clear the interrupt flag */ }
 
 void halt() { __asm__ volatile ("cli; hlt"); /* halt the computer and clear interrupts so no interrupt unhalts it */ }
+
+

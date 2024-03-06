@@ -6,7 +6,7 @@
 
 %define SECTS_TO_READ 64
 %define OS_LOAD_ADDR 0xAE00
-%define KERNEL_SECT_START 50
+%define KERNEL_SECT_START 18
 
 [org 0x7e00]
 [bits 16]

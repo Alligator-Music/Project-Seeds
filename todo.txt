@@ -3,15 +3,6 @@ TODO stuff
 make memory managment (mm)
     - this very important so i can have strtok stuff for the CLI and just EVERYTHING
 
-fix bootloader being DELETED error
+implement file system
 
-implement my actual libc file handling implementation
-
-improve cin and buffer it
-
-improve cout and buffer it
-
-make a definite file system structure
-    - directory support
-
-implement streams for everybody!!1!1! (cus libc really needs it rn)
+make a ctrl-alt-del and a kernel debugger key combo

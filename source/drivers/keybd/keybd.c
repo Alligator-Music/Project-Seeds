@@ -12,8 +12,6 @@ typedef struct key_info_t {
     bool ctrl;
 };
 
-#define PS2_DATA_PORT 0x60
-
 char keybd_scantable[128] = {
     0,  27, '1', '2', '3', '4', '5', '6', '7', '8', /* 9 */
     '9', '0', '-', '=', '\b',   /* Backspace */
@@ -115,7 +113,7 @@ void __attribute__((interrupt)) keybd_irq(struct int_frame_t* frame) {
         }
     }
 
-    pic_sendeoi(IRQ_KEYBD);
+    pic_sendeoi(IRQ_PS2_KEYBD);
 }
 
 char keybd_getch() {

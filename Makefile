@@ -32,15 +32,14 @@ prebuild:
 
 build: boot $(ASMTAR) $(CTAR)
 	$(LD) -o $(BIN)/kernel.bin $(LDPRIORITY) $(filter-out $(LDPRIORITY) $(LDOSENTRY),$(shell find ./ -name "*.o" | xargs)) $(LFLAGS) -T build/kernel.ld
-#dd if=/dev/zero bs=1 seek=8192 count=1 of=$(BIN)/osentry.bin
+
 	dd if=/dev/zero bs=1 seek=32768 count=1 of=$(BIN)/kernel.bin
-#cat $(BIN)/mbr.bin $(BIN)/registry.bin $(BIN)/osentry.bin > $(BIN)/boot.bin
-	cat $(BIN)/mbr.bin $(BIN)/load.bin $(BIN)/startft.bin $(BIN)/kernel.bin > os.bin
+
+	cat $(BIN)/mbr.bin $(BIN)/load.bin $(BIN)/kernel.bin > os.bin
 
 boot:
 	nasm source/boot/mbr/mbr.asm -f bin -o $(BIN)/mbr.bin
 	nasm source/boot/load/load.asm -f bin -o $(BIN)/load.bin
-	nasm source/fs/seedfs/startft.asm -f bin -o $(BIN)/startft.bin
 
 %.o: %.c
 	mkdir -p $(BIN)/$(shell dirname $<)

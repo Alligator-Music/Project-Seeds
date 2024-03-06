@@ -3,7 +3,7 @@
 #include "libc.h"
 
 void start_cli() {
-    cout("\nSeeds System CLI\nType 'help' for help.\n");
+    cout("\n* Project Seeds CLI *\nType 'help' for help.\n");
 
     while (true) {
         cout("> ");

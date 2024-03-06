@@ -1,40 +1,14 @@
-this operating system has 2 custom c libraries: tree libc and tree libk (kernel utilities)
+this operating system has 2 custom c libraries: A libc and a libk (kernel utilities)
 
-tree libc functions & stuff:
-    prefix f: file related functions
-    
+libc functions & stuff:
     cout(const char* fmt, ...); // basically a printf with custom escape sequences and stuff
     cin();                      // returns string input from keybd, terminated by enter
     cmd(const char* str);       // executes a system command, similiar to system()
-    fregstr(struct file_t* file, const char* path);   // registers a file, similiar to open()
-    funrgstr(struct file_t* file);                    // unregisters a file, similiar to close()
-    fcout(struct file_t* file, const char* fmt, ...); // basically cout but output is a file
-
-tree libc utils:
-
-    str/mem utils:
-        prefix str: do something to a memory location until it hits a 0
-        prefix mem: do something to a memory location with a set size
-
-        strlen(char* str);            // string length
-
-        strcmp(char* a, char* b);     // compare 2 strs
-        strcpy(char* src, char* dst); // copy one string to another
-        strset(char* str, char c);    // set a string to a character
-
-        memcmp(char* a, char* b, int size);     // compare 2 memory locations
-        memcpy(char* src, char* dst, int size); // copy one memory location to another
-        memset(char* src, char c, int size);    // set a memory location to a character
 
 cout:
     int cout(const char* fmt, ...);
 
     this function prints to the screen with the format string (literally printf).
-    cout also has different output streams so you can put text onto different parts of the screen/console
-
-    current output streams:
-        0x01 - regular console output
-        0x02 - output to taskbar
 
     current formating types:
         %s - string
@@ -53,4 +27,4 @@ cout:
 
         current CCS's:
             0x01 - change color - \x11 \x01 \x{8bit color to change to}
-            0x02 - change output stream - \x11 \x02 \x{output stream to change to}
+            0x02 - clear sceren - \x11 \x02 \x{screen color}
